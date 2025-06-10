@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	ConfigPath = "/home/youxihu/secret/aiops/aliyun_sg/sg.yaml"
+	ConfigPath = "/home/youxihu/secret/aiops/aliyun_sg/test.sg.yaml"
 )
 
 func main() {
