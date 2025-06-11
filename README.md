@@ -8,9 +8,9 @@
 ---
 ## 项目已实现(待拓展)
 
-- [查询安全组基本信息列表功能)](https://next.api.aliyun.com/document/Ecs/2014-05-26/DescribeSecurityGroups)
-- [查询安全组及其组内规则信息功能](https://next.api.aliyun.com/document/Ecs/2014-05-26/DescribeSecurityGroupAttribute)
-- `根据自定义需求`[修改安全组入方向规则功能](https://next.api.aliyun.com/document/Ecs/2014-05-26/ModifySecurityGroupRule)
+- [查询安全组基本信息列表](https://next.api.aliyun.com/document/Ecs/2014-05-26/DescribeSecurityGroups)
+- [查询安全组及其组内规则信息](https://next.api.aliyun.com/document/Ecs/2014-05-26/DescribeSecurityGroupAttribute)
+- `根据自定义需求`[修改安全组入方向规则](https://next.api.aliyun.com/document/Ecs/2014-05-26/ModifySecurityGroupRule)
 - 实时获取公司公网 IP 并更新至安全组规则中
 - 根据回调信息实时发送事件通知与告警
 
@@ -20,8 +20,7 @@
 
 - **语言**：`Go、Shell`
 - **API**：更多需求可根据[阿里云API](https://next.api.aliyun.com/document/Ecs/2014-05-26)自行调用
-- **依赖管理**：`go mod`
-- **使用方法参阅**：[Makefile](https://github.com/youxihu/aliyun_api/blob/master/Makefile)
+- **本项目使用方法参阅**：[Makefile](https://github.com/youxihu/aliyun_api/blob/master/Makefile)
 
 ---
 
