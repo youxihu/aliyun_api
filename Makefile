@@ -29,6 +29,8 @@ test:
 	@echo "shell: go test -v -run TestGetStarredRules internal/describeSecurityGroups"
 	@echo "3: 测试修改安全组入方向为允许公司网络访问"
 	@echo "shell: go test -v -run TestModifySecurityGroup internal/modifySecurityGroups"
+	@echo "4: 获取本机公网IP"
+	@echo "shell: go test -v -run TestGetPublicIP utils"
 	@echo "例如:  make test-1"
 
 
@@ -37,5 +39,6 @@ test-%:
 		1) cd internal/describeSecurityGroups && go test -v -run TestDescribeSecurityGroupAttribute ;; \
 		2) cd internal/describeSecurityGroups  && go test -v -run TestGetStarredRules ;; \
 		3) cd internal/modifySecurityGroups  && go test -v -run TestModifySecurityGroup ;; \
+		4) cd utils  && go test -v -run TestGetPublicIP ;; \
 		*) echo "无效选项" ;; \
 	esac
