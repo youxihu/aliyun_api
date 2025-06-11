@@ -7,18 +7,16 @@ IP_FILE="/home/youxihu/alarm/Get-publicIpAndModify/old_ip.txt"
 MAX_RETRIES=3                      # 最大重试次数
 RETRY_DELAY=2                      # 重试间隔(秒)
 SG_MODIFY_PATH="/home/youxihu/alarm/Get-publicIpAndModify/sgModify"
+SG_MODIFY_HOME="/home/youxihu/alarm/Get-publicIpAndModify"
 E_TIME=$(date +%Y/%m/%d--%H:%M)
 
-
 check_and_update_ip() {
-    # 检查文件是否存在，如果不存在则创建
     [ ! -e "$IP_FILE" ] && touch "$IP_FILE"
 
     # 获取旧IP地址
     local old_ip
     old_ip=$(<"$IP_FILE")
 
-    # 获取新IP地址（支持重试机制）
     local new_ip=""
     local retry_count=0
 
@@ -46,38 +44,35 @@ check_and_update_ip() {
     echo "当前公网IP: $new_ip"
     echo "历史公网IP: ${old_ip:-无记录}"
 
-    # 检查IP是否变化
-    if [ "$old_ip" != "$new_ip" ]; then
-        echo "检测到IP变化，正在更新..."
-        echo "$new_ip" > "$IP_FILE"
+    if [ "$old_ip" == "$new_ip" ]; then
+        echo "IP地址无变化，无需处理"
+        return 0
+    fi
 
-        # 执行安全组修改
-        echo "正在修改安全组规则..."
-        local modify_output
-        modify_output=$("$SG_MODIFY_PATH" 2>&1 | tee -a sgModify.log)
-        local modify_success
-        modify_success=$(grep -w 'ModifySecurityGroupsRules=True' <<< "$modify_output")
+    echo "$new_ip" > "$IP_FILE"
 
-        # 发送通知
-        if [ "$modify_success" = "ModifySecurityGroupsRules=True" ]; then
-            echo "安全组规则修改成功"
-            sendDingIP "### **告警通知: $IPIP**\n\
+    echo "正在修改安全组规则..."
+    local modify_output
+    modify_output=$("$SG_MODIFY_PATH" 2>&1 | tee -a $SG_MODIFY_HOME/sgModify.log)
+    local modify_success
+    modify_success=$(grep -w 'ModifySecurityGroupsRules=True' <<< "$modify_output")
+
+    if [ "$modify_success" = "ModifySecurityGroupsRules=True" ]; then
+        echo "安全组规则修改成功"
+        sendDingIP "### **事件通知: $IPIP**\n\
 ### 状态: 已处理\n\
 - IP地址: $new_ip\n\
 - 执行时间: $(date +'%Y-%m-%d %H:%M:%S')\n\
 - 备注：已通过自动化运维系统修改安全组\n\
 - [登录阿里云查看修改情况](https://ecs.console.aliyun.com/home#/)"
-        else
-            echo "[警告] 安全组规则修改失败"
-            sendDingIP "### **告警通知: $IPIP**\n\
+    else
+        echo "[警告] 安全组规则修改失败"
+        sendDingIP "### **告警通知: $IPIP**\n\
 #### 状态: 待处理\n\
 - IP地址: $new_ip\n\
 - 执行时间: $(date +'%Y-%m-%d %H:%M:%S')\n\
 - 备注: 自动化修改安全组出现错误\n\
 - [请及时登录阿里云或查看自动化运维系统运行日志](https://ecs.console.aliyun.com/home#/)"
-        fi
-    else
-        echo "IP地址无变化，无需处理"
     fi
 }
 
